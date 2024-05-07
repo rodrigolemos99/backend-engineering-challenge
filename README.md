@@ -78,6 +78,8 @@ There were many different scenarios considered to see how the program would hand
 
 * <u>**Ability to consider different days**</u>: The last test was implemented to confirm if the program was able to handle timestamps from different days. The program passed the test successfully.
 
+The folder **tests_input_files** must be unzipped and it is a directory with input files for the tests.
+
 ## Optimizations
 
 Two optimizations were considered and were both related to the fact that the data is ordered according to the timestamp, from the oldest to the most recent.
