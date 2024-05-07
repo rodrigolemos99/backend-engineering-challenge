@@ -1,58 +1,22 @@
-# Backend Engineering Challenge
+# Translation Delivery Time - Duration Moving Average Application
 
+As an Unbabel Engineer, it is critical to monitor the delivery time of a translation to a client since the shorter the better. For that effect, it was proposed to build a simple command line application to compute, for every minute, the moving average of the translation delivery time for the last X minutes. It was known in advance the format of the input files and the desired format for the outputs. It was also known that the input were ordered by the `timestamp` key, from the oldest to the most recent translation.
 
-Welcome to our Engineering Challenge repository 🖖
+## Input File Format
 
-If you found this repository it probably means that you are participating in our recruitment process. Thank you for your time and energy. If that's not the case please take a look at our [openings](https://unbabel.com/careers/) and apply!
-
-Please fork this repo before you start working on the challenge, read it careful and take your time and think about the solution. Also, please fork this repository because we will evaluate the code on the fork.
-
-This is an opportunity for us both to work together and get to know each other in a more technical way. If you have any questions please open and issue and we'll reach out to help.
-
-Good luck!
-
-## Challenge Scenario
-
-At Unbabel we deal with a lot of translation data. One of the metrics we use for our clients' SLAs is the delivery time of a translation. 
-
-In the context of this problem, and to keep things simple, our translation flow is going to be modeled as only one event.
-
-### *translation_delivered*
-
-Example:
+The input format is the following:
 
 ```json
-{
-	"timestamp": "2018-12-26 18:12:19.903159",
-	"translation_id": "5aa5b2f39f7254a75aa4",
-	"source_language": "en",
-	"target_language": "fr",
-	"client_name": "airliberty",
-	"event_name": "translation_delivered",
-	"duration": 20,
-	"nr_words": 100
-}
+{"timestamp": "2018-12-26 18:11:08.509654","translation_id": "5aa5b2f39f7254a75aa5","source_language": "en","target_language": "fr","client_name": "airliberty","event_name": "translation_delivered","nr_words": 30, "duration": 20}
+{"timestamp": "2018-12-26 18:15:19.903159","translation_id": "5aa5b2f39f7254a75aa4","source_language": "en","target_language": "fr","client_name": "airliberty","event_name": "translation_delivered","nr_words": 30, "duration": 31}
+{"timestamp": "2018-12-26 18:23:19.903159","translation_id": "5aa5b2f39f7254a75bb3","source_language": "en","target_language": "fr","client_name": "taxi-eats","event_name": "translation_delivered","nr_words": 100, "duration": 54}
 ```
 
-## Challenge Objective
+## Output File Format
 
-Your mission is to build a simple command line application that parses a stream of events and produces an aggregated output. In this case, we're interested in calculating, for every minute, a moving average of the translation delivery time for the last X minutes.
+The expected output format is the following:
 
-If we want to count, for each minute, the moving average delivery time of all translations for the past 10 minutes we would call your application like (feel free to name it anything you like!).
-
-	unbabel_cli --input_file events.json --window_size 10
-	
-The input file format would be something like:
-
-	{"timestamp": "2018-12-26 18:11:08.509654","translation_id": "5aa5b2f39f7254a75aa5","source_language": "en","target_language": "fr","client_name": "airliberty","event_name": "translation_delivered","nr_words": 30, "duration": 20}
-	{"timestamp": "2018-12-26 18:15:19.903159","translation_id": "5aa5b2f39f7254a75aa4","source_language": "en","target_language": "fr","client_name": "airliberty","event_name": "translation_delivered","nr_words": 30, "duration": 31}
-	{"timestamp": "2018-12-26 18:23:19.903159","translation_id": "5aa5b2f39f7254a75bb3","source_language": "en","target_language": "fr","client_name": "taxi-eats","event_name": "translation_delivered","nr_words": 100, "duration": 54}
-
-Assume that the lines in the input are ordered by the `timestamp` key, from lower (oldest) to higher values, just like in the example input above.
-
-The output file would be something in the following format.
-
-```
+```json
 {"date": "2018-12-26 18:11:00", "average_delivery_time": 0}
 {"date": "2018-12-26 18:12:00", "average_delivery_time": 20}
 {"date": "2018-12-26 18:13:00", "average_delivery_time": 20}
@@ -69,18 +33,55 @@ The output file would be something in the following format.
 {"date": "2018-12-26 18:24:00", "average_delivery_time": 42.5}
 ```
 
-#### Notes
+## Requirements
 
-Before jumping right into implementation we advise you to think about the solution first. We will evaluate, not only if your solution works but also the following aspects:
+To run the implemented scripts it is necessary to have:
+* Python 3.0 or above;
+* Built in packages such as <u>json</u>, <u>time</u>, <u>datetime</u>, <u>argparse</u> and <u>os</u>;
+* <u>Pytest</u> package used for the unit tests of the implemented functions. 
 
-+ Simple and easy to read code. Remember that [simple is not easy](https://www.infoq.com/presentations/Simple-Made-Easy)
-+ Comment your code. The easier it is to understand the complex parts, the faster and more positive the feedback will be
-+ Consider the optimizations you can do, given the order of the input lines
-+ Include a README.md that briefly describes how to build and run your code, as well as how to **test it**
-+ Be consistent in your code. 
+<u>**Note**</u>: Visual Studio Code was used to implement the scripts and unit tests.
 
-Feel free to, in your solution, include some your considerations while doing this challenge. We want you to solve this challenge in the language you feel most comfortable with. Our machines run Python (3.7.x or higher) or Go (1.16.x or higher). If you are thinking of using any other programming language please reach out to us first 🙏.
+## How to run the implemented application
 
-Also, if you have any problem please **open an issue**. 
+On your terminal and if you have this repository as root, run the following command:
 
-Good luck and may the force be with you
+`python unbabel_cli.py <INPUT_FILE_PATH> <WINDOW_SIZE>`
+
+where:
+
+* <INPUT_FILE_PATH> is the path to the input file and must be a string;
+
+* <WINDOW_SIZE> is the number of minutes to be considered in the moving average. If WINDOW_SIZE = 10, then the program will compute the moving average for each minute considering the last 10 minutes.
+
+If the chosen inputs are correct the script will generate a file named <u>output_file.json</u>, which contains the moving average for each minute.
+
+## How to run the implemented unit tests
+
+Firstly, if necessary, <u>pytest</u> package must be installed by running the following command:
+
+`pip install pytest`
+
+Then, simply run the command `pytest` in your terminal as it will look for the <u>test_unbabel_cli.py</u> script and run the implemented tests.
+
+There were many different scenarios considered to see how the program would handle them. 
+
+* <u>**Incorrect input file**</u>: If the input file had more keys than the ones expected or had missing keys, the program would print a warning informing the user about what is wrong and the execution ends. Also, if all file's keys were correct but the values's type were not correct, the program terminates and another warning is shown;
+
+* <u>**Incorrect timestamp format**</u>: If the timestamps are not in the correct format, which is <u>Year-Month-Day Hours:Minutes:Seconds:Microseconds</u>, the program terminates and the user is informed;
+
+* <u>**Incorrect file path**</u>: If the path to the input file is not correct, which means the program can't find the file, a warning is also shown to the user and the program's execution ends;
+
+* <u>**File not ordered correctly**</u>: As said, the file must be ordered from the oldest to the most recent timestamp. If this is not true, the user will be informed by a message in the terminal and the program is terminated;
+
+* <u>**Incorrect window size**</u>: If the user inputs a window size which is not greater than 0 and an integer, the program will not start and a warning is shown to the user;
+
+* <u>**Ability to consider different days**</u>: The last test was implemented to confirm if the program was able to handle timestamps from different days. The program passed the test successfully.
+
+## Optimizations
+
+Two optimizations were considered and were both related to the fact that the data is ordered according to the timestamp, from the oldest to the most recent.
+
+* To find the <u>minimum and the maximum timestamps</u> it was not necessary to iterate through all the data, since the minimum was from the first translation and the maximum from the last record;
+
+* When computing the moving average for a given timestamp, <u>once a translation with a greater timestamp was found</u> it was possible to stop analysing the current timestamp and proceed to the next on since we know the timestamps would keep increasing.    
