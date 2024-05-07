@@ -62,7 +62,7 @@ Firstly, if necessary, <u>pytest</u> package must be installed by running the fo
 
 `pip install pytest`
 
-Then, simply run the command `pytest` in your terminal as it will look for the <u>test_unbabel_cli.py</u> script and run the implemented tests.
+Then, simply run the command `pytest` in your terminal as it will look for the **test_unbabel_cli.py**</u>** script and run the implemented tests.
 
 There were many different scenarios considered to see how the program would handle them. 
 
